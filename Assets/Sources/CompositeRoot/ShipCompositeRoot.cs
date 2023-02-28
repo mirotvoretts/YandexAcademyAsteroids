@@ -1,9 +1,5 @@
-using Asteroids.Input;
 using Asteroids.Model;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace CompositeRoot
 {
@@ -26,6 +22,7 @@ namespace CompositeRoot
         public float Speed => _shipInputRouter.Speed;
         public LaserGun LaserGun => _laserGun;
         public LaserGunRollback LaserGunRollback => _laserGunRollback;
+        public uint Health => ShipSurvivability.GetInstance().Health;
 
         public override void Compose()
         {
@@ -42,6 +39,8 @@ namespace CompositeRoot
 
             _bulletsSimulation = new BulletsSimulation();
             _laserGunRollback = new LaserGunRollback(_laserGun, Config.LaserCooldown);
+            
+            ShipSurvivability.GetInstance().SetFieldsToDeffaults();
         }
 
         public void DisableShip()

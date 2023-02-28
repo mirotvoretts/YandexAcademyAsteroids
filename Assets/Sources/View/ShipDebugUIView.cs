@@ -6,7 +6,8 @@ using Asteroids.Model;
 public class ShipDebugUIView : MonoBehaviour
 {
     [SerializeField] private ShipCompositeRoot _ship;
-
+    
+    [SerializeField] private Text _healthLabel;
     [SerializeField] private Text _positionLabel;
     [SerializeField] private Text _rotationLabel;
     [SerializeField] private Text _speedLabel;
@@ -17,7 +18,7 @@ public class ShipDebugUIView : MonoBehaviour
     {
         _ship.LaserGun.Shot += OnLaserGunShot;
         _ship.LaserGun.ShotAdd += OnLaserGunShotAdd;
-
+        
         UpdateLasersCount();
     }
 
@@ -30,6 +31,7 @@ public class ShipDebugUIView : MonoBehaviour
 
     private void Update()
     {
+        _healthLabel.text = $"Health: {_ship.Health}";
         _positionLabel.text = $"Position: {_ship.Model.Position}";
         _rotationLabel.text = $"Rotation: {Mathf.RoundToInt(_ship.Model.Rotation)}°";
         _speedLabel.text = $"Speed: {Mathf.RoundToInt(_ship.Speed * 10000)}";

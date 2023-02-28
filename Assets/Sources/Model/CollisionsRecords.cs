@@ -8,6 +8,13 @@ namespace Asteroids.Model
     {
         private readonly BulletsSimulation _bullets;
         private readonly EnemiesSimulation _enemies;
+        private readonly ShipSurvivability _shipSurvivability;
+
+        private uint Health
+        {
+            get => _shipSurvivability.Health;
+            set => _shipSurvivability.Health = value;
+        }
 
         public event Action GameEnd;
 
@@ -15,35 +22,60 @@ namespace Asteroids.Model
         {
             _bullets = bullets;
             _enemies = enemies;
+            _shipSurvivability = ShipSurvivability.GetInstance();
         }
 
         public IEnumerable<Record> Values()
         {
-            yield return IfCollided((Bullet bullet, Enemy enemy) =>
+            if (Health <= 1)
             {
-                _enemies.StopAll(enemy);
-            });
+                yield return IfCollided((Bullet bullet, Enemy enemy) =>
+                {
+                    _enemies.StopAll(enemy);
+                });
 
-            yield return IfCollided((DefaultBullet bullet, Enemy enemy) =>
+                yield return IfCollided((DefaultBullet bullet, Enemy enemy) =>
+                {
+                    _bullets.StopAll(bullet);
+                });
+
+                yield return IfCollided((Bullet bullet, Asteroid asteroid) =>
+                {
+                    TryToFallApart(asteroid);
+                });
+
+                yield return IfCollided((Ship ship, Enemy enemy) =>
+                {
+                    GameEnd?.Invoke();
+                });
+
+                Health = 0;
+            }
+            else
             {
-                _bullets.StopAll(bullet);
-            });
+                Health -= 1;
+                
+                yield return IfCollided((Ship ship, Enemy enemy) =>
+                {
+                    
+                });
 
-            yield return IfCollided((Bullet bullet, Asteroid asteroid) =>
-            {
-                if (asteroid is PartOfAsteroid)
-                    return;
+                yield return IfCollided((Ship ship, Asteroid asteroid) =>
+                {
+                    TryToFallApart(asteroid);
+                });
+            }
+        }
 
-                _enemies.Simulate(asteroid.CreatePart());
-                _enemies.Simulate(asteroid.CreatePart());
-                _enemies.Simulate(asteroid.CreatePart());
-                _enemies.Simulate(asteroid.CreatePart());
-            });
+        private void TryToFallApart(Asteroid asteroid)
+        {
+            if (asteroid is PartOfAsteroid)
+                return;
 
-            yield return IfCollided((Ship ship, Enemy enemy) =>
-            {
-                GameEnd?.Invoke();
-            });
+            _enemies.Simulate(asteroid.CreatePart());
+            _enemies.Simulate(asteroid.CreatePart());
+            _enemies.Simulate(asteroid.CreatePart());
+            _enemies.Simulate(asteroid.CreatePart());
         }
 
         private Record IfCollided<T1, T2>(Action<T1, T2> action)
