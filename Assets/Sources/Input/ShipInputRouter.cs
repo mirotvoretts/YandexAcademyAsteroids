@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class ShipInputRouter
 {
+    private bool _isRotationInversed = false;
+    
     private ShipInput _input;
     private InertMovement _inertMovement;
     private ShipMovement _shipMovement;
@@ -14,11 +16,12 @@ public class ShipInputRouter
 
     public float Speed => _inertMovement.Acceleration.magnitude;
 
-    public ShipInputRouter(ShipMovement shipMovement)
+    public ShipInputRouter(ShipMovement shipMovement, bool isRotationInversed)
     {
         _input = new ShipInput();
         _inertMovement = new InertMovement();
         _shipMovement = shipMovement;
+        _isRotationInversed = isRotationInversed;
     }
 
     public void OnEnable()
@@ -82,8 +85,10 @@ public class ShipInputRouter
     private void TryRotate()
     {
         float direction = _input.Ship.Rotate.ReadValue<float>();
-
-        if(direction != 0)
+        
+        if(direction != 0 && _isRotationInversed)
+            _shipMovement.InverseRotate(direction, Time.deltaTime);
+        else if (direction != 0 && !_isRotationInversed)
             _shipMovement.Rotate(direction, Time.deltaTime);
     }
 }

@@ -54,16 +54,6 @@ namespace Asteroids.Model
             else
             {
                 Health -= 1;
-                
-                yield return IfCollided((Ship ship, Enemy enemy) =>
-                {
-                    
-                });
-
-                yield return IfCollided((Ship ship, Asteroid asteroid) =>
-                {
-                    TryToFallApart(asteroid);
-                });
             }
         }
 

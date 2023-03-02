@@ -31,7 +31,7 @@ namespace CompositeRoot
 
             _shipModel = new Ship(new Vector2(0.5f, 0.5f), 0);
             _shipMovement = new ShipMovement(_shipModel);
-            _shipInputRouter = new ShipInputRouter(_shipMovement)
+            _shipInputRouter = new ShipInputRouter(_shipMovement, true)
                 .BindGunToFirstSlot(_baseGun)
                 .BindGunToSecondSlot(_laserGun);
 

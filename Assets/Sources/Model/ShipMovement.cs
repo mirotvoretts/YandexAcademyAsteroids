@@ -25,9 +25,14 @@ namespace Asteroids.Model
             if (direction == 0)
                 throw new InvalidOperationException(nameof(direction));
 
-            direction = direction > 0 ? -1 : 1;
+            direction = direction > 0 ? 1 : -1;
 
             _ship.Rotate(direction * deltaTime * _degreesPerSecond);
+        }
+
+        public void InverseRotate(float direction, float deltaTime)
+        {
+            Rotate(-1 * direction, deltaTime);
         }
     }
 }
