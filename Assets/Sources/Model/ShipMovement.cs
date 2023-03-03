@@ -29,10 +29,5 @@ namespace Asteroids.Model
 
             _ship.Rotate(direction * deltaTime * _degreesPerSecond);
         }
-
-        public void InverseRotate(float direction, float deltaTime)
-        {
-            Rotate(-1 * direction, deltaTime);
-        }
     }
 }

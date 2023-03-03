@@ -51,8 +51,13 @@ namespace Asteroids.Model
 
                 Health = 0;
             }
-            else
+            else 
             {
+                yield return IfCollided((Ship ship, Enemy enemy) =>
+                {
+                    _enemies.StopAll(enemy);
+                });
+
                 Health -= 1;
             }
         }
